@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flask Forecast Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: #eee;
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;  /* Modificado: centrar los contenedores */
+        }
+
+        .model-card {
+            width: 60%;  /* Modificado: ocupar el 60% central de la pantalla */
+            margin-bottom: 30px;
+            background-color: #333;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .model-card h2 {
+            margin-bottom: 10px;
+            color: #eee;
+        }
+
+        .chart-container {
+            width: 100%;
+            padding-top: 60%;
+            position: relative;
+        }
+
+        .chart {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .download-link {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            color: #eee;
+        }
+
+        @media (max-width: 768px) {
+            .model-card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Forecast Results</h1>
+    <div class="container">
+        <div class="model-card">
+            <h2>Auto ARIMA</h2>
+            <div class="chart-container">
+                {% if forecast_data.arima_plot %}
+                    <img src="data:image/png;base64,{{ forecast_data.arima_plot }}" alt="Auto ARIMA Forecast Chart" class="chart">
+                {% else %}
+                    <p>Model could not be generated</p>
+                {% endif %}
+            </div>
+            <a class="download-link" href="/download/arima">Download CSV</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="model-card">
+            <h2>Auto SARIMA</h2>
+            <div class="chart-container">
+                {% if forecast_data.sarima_plot %}
+                    <img src="data:image/png;base64,{{ forecast_data.sarima_plot }}" alt="Auto SARIMA Forecast Chart" class="chart">
+                {% else %}
+                    <p>Model could not be generated</p>
+                {% endif %}
+            </div>
+            <a class="download-link" href="/download/sarima">Download CSV</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="model-card">
+            <h2>Exponential Smoothing</h2>
+            <div class="chart-container">
+                {% if forecast_data.es_plot %}
+                    <img src="data:image/png;base64,{{ forecast_data.es_plot }}" alt="Exponential Smoothing Forecast Chart" class="chart">
+                {% else %}
+                    <p>Model could not be generated</p>
+                {% endif %}
+            </div>
+            <a class="download-link" href="/download/exponential">Download CSV</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="model-card">
+            <h2>Random Forest</h2>
+            <div class="chart-container">
+                {% if forecast_data.rf_plot %}
+                    <img src="data:image/png;base64,{{ forecast_data.rf_plot }}" alt="Random Forest Forecast Chart" class="chart">
+                {% else %}
+                    <p>Model could not be generated</p>
+                {% endif %}
+            </div>
+            <a class="download-link" href="/download/randomforest">Download CSV</a>
+        </div>
+    </div>
+</body>
+</html>
+

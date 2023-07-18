@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CII.IA Forecasting</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: #eee;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            text-align: center;
+            color: #eee;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ccc;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            background-color: #444;
+            color: #eee;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .description {
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #ccc;
+            text-align: justify;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .info {
+            margin-top: 20px;
+            background-color: #555;
+            padding: 10px;
+            border-radius: 4px;
+            color: #eee;
+            cursor: pointer;
+            text-align: justify;
+        }
+
+        .info-content {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #777;
+            border-radius: 4px;
+            display: none;
+            text-align: justify;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CII.IA Forecasting</h1>
+        <form action="/forecast" method="POST" enctype="multipart/form-data">
+            <div class="description">
+                <p>Enter the required information below:</p>
+            </div>
+            <label for="input_name">Forecast Name:</label>
+            <input type="text" id="input_name" name="input_name" required>
+            <div class="description">
+                <p>A name to identify the forecast.</p>
+            </div>
+
+            <label for="input_csv">CSV File:</label>
+            <input type="file" id="input_csv" name="input_csv" required accept=".csv">
+            <div class="description">
+                <p>Select the CSV file containing the time series data.</p>
+            </div>
+
+            <label for="input_time">Time Column Name:</label>
+            <input type="text" id="input_time" name="input_time">
+            <div class="description">
+                <p>The name of the column in the CSV file that represents time (optional).</p>
+            </div>
+
+            <label for="input_series">Series Column Name:</label>
+            <input type="text" id="input_series" name="input_series" required>
+            <div class="description">
+                <p>The name of the column in the CSV file that represents the series values.</p>
+            </div>
+
+            <label for="input_forecasting_steps">Forecast Steps:</label>
+            <input type="number" id="input_forecasting_steps" name="input_forecasting_steps" value="15" required>
+            <div class="description">
+                <p>The number of steps to forecast into the future.</p>
+            </div>
+
+            <label for="seasonality">Seasonality:</label>
+            <input type="checkbox" id="seasonality" name="seasonality" onclick="toggleSeasonalityBox()">
+            <div class="description">
+                <p>Check this box if the time series exhibits seasonality.</p>
+            </div>
+
+            <div id="seasonality_box" class="hidden">
+                <label for="m">Seasonality Period:</label>
+                <input type="number" id="m" name="m">
+                <div class="description">
+                    <p>The period of seasonality in the time series.</p>
+                </div>
+            </div>
+
+            <label for="optimize_models">Optimize Models:</label>
+            <input type="checkbox" id="optimize_models" name="optimize_models">
+            <div class="description">
+                <p>Check this box if you want to optimize the models. This will result in higher precision, but it will take more time to train.</p>
+            </div>
+
+            <input type="submit" value="Forecast">
+        </form>
+
+        <div class="info" onclick="toggleInfoContent()">More Information and Examples</div>
+        <div id="info_content" class="info-content">
+            <p><strong>Possible Errors:</strong></p>
+            <ul>
+                <li>Missing Required Fields: Ensure that all the required fields are provided in the HTML form. The required fields are input_name, input_csv, input_time, input_series, and input_forecasting_steps.</li>
+                <li>Invalid CSV File: Make sure that the uploaded CSV file is valid and accessible. If the file cannot be found or is not in the expected format, it will result in an error.</li>
+                <li>Invalid Time Column or Series Column: Check that the provided time column and series column names match the column names in the CSV file. If they don't match, the code won't be able to extract the time series data correctly.</li>
+                <li>Forecasting Steps: Ensure that the number of forecasting steps is a positive integer. Negative or non-integer values will cause an error.</li>
+                <li>Seasonality and M: The seasonality and m parameters determine whether to include seasonality and the seasonality period, respectively. If seasonality is not checked or m is not provided, the default values will be used (no seasonality).</li>
+                <li>Optimization: The optimize_models parameter determines whether to optimize the models or use predetermined parameters. If optimize_models is not checked, predetermined parameters will be used. Keep in mind that model optimization can be time-consuming.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function toggleSeasonalityBox() {
+            var seasonalityBox = document.getElementById('seasonality_box');
+            seasonalityBox.classList.toggle('hidden');
+        }
+
+        function toggleInfoContent() {
+            var infoContent = document.getElementById('info_content');
+            infoContent.style.display = infoContent.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>
